@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -30,3 +31,5 @@ urlpatterns += [
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
 ]
+# Для работы статики при деплое в Docker
+urlpatterns += staticfiles_urlpatterns()

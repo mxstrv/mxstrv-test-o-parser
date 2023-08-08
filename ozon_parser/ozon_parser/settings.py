@@ -1,12 +1,15 @@
 import os
 
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -61,14 +64,11 @@ WSGI_APPLICATION = 'ozon_parser.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE'),
-        'USER': os.getenv('MYSQL_USER'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
+        'NAME': os.environ.get('MYSQL_DATABASE', 'mysql-db'),
+        'USER': os.environ.get('MYSQL_USER', 'mysql-user'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'mysql-password'),
+        'HOST': os.environ.get('MYSQL_DATABASE_HOST', 'mysql'),
+        'PORT': os.environ.get('MYSQL_DATABASE_PORT', 3306),
     }
 }
 
@@ -107,6 +107,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -114,8 +115,8 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery настройки
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
 
 # AdminLTE настройки
 LOGIN_REDIRECT_URL = '/'

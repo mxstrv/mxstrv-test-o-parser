@@ -33,7 +33,7 @@ def parse_page(page: str) -> str:
 
     response = requests.post(
         # POST запрос на прокси сервер
-        'http://localhost:8191/v1',
+        'http://flaresolverr:8191/v1',
         headers={'Content-Type': 'application/json'},
         json=post_body
     )
@@ -144,7 +144,7 @@ def proxy_accessible_check() -> bool:
     недоступен
     """
     try:
-        request = requests.get('http://localhost:8191')
+        request = requests.get('http://flaresolverr:8191')
         return True if request.status_code == 200 else False
     except requests.exceptions.ConnectionError:
         return False
