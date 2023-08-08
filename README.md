@@ -88,12 +88,6 @@ docker compose up -d --build
 3. Выполните миграции для работы с базой данных (выполняется один раз при создании Docker Volume):
 
 ```sh
-docker compose exec django_backend python manage.py migrate
-```
-
-3. Выполните миграции для работы с базой данных (выполняется один раз при создании Docker Volume):
-
-```sh
 docker exec django_backend python manage.py migrate
 ```
 
