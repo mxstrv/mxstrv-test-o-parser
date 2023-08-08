@@ -51,3 +51,9 @@ services:
       - 8000
     ports:
       - "8000:8000"
+
+  telegram_bot:
+    container_name: telegram_bot
+    build: ../telegram_bot
+    env_file:
+      - ../telegram_bot/.env
