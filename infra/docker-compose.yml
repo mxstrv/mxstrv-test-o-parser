@@ -1,0 +1,53 @@
+version: "3.0"
+
+volumes:
+  data:
+
+
+services:
+
+  mysql:
+    image: mysql/mysql-server:latest
+    container_name: mysql
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - TZ=Europe/Moscow
+    ports:
+      - ":8191"
+    restart: unless-stopped
+
+
+  backend:
+    container_name: django_backend
+    build: ../ozon_parser
+    env_file:
+      - ../ozon_parser/.env
+    depends_on:
+      - mysql
+      - redis
+      - flaresolverr
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
