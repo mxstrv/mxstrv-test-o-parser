@@ -1,11 +1,19 @@
+import redis
 import requests
 from bs4 import BeautifulSoup
 from celery import shared_task
 
 from products.models import Product
+from core.telegram_notification import telegram_notify
 
 
 MARKETPLACE_URL = 'https://ozon.ru/seller/1/products'
+
+redis_client = redis.StrictRedis(
+    host='redis',
+    port=6379,
+    db=0
+)
 
 
 def parse_page(page: str) -> str:
@@ -125,6 +133,10 @@ def parse_and_add_to_db(number: int) -> None:
         page_num += 1
         current_n -= len(products_result)
 
+    # Отправка в redis результатов парсинга
+    redis_client.set('parsing results', str(products_result))
+    # Уведомление в телеграм
+    telegram_notify(len(products_result))
     for item in products_result:
         product_id = item['product_id']
         try:
